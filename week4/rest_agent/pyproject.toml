@@ -1,0 +1,22 @@
+[project]
+name = "rest-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "M Mudassar", email = "contacmudassar@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "groq",
+    "langchain-core",
+    "langgraph",
+    "python-dotenv",
+]
+
+[project.scripts]
+rest-agent = "rest_agent:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
