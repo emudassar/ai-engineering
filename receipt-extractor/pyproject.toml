@@ -1,0 +1,19 @@
+[project]
+name = "receipt-extractor"
+version = "0.1.0"
+description = "Turn receipt PDFs and photos into a clean expense CSV"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "openpyxl>=3.1",
+    "groq>=0.30",
+    "pypdf>=5.0",
+    "pydantic>=2.0",
+    "python-dotenv>=1.0",
+    "python-multipart>=0.0.9",
+    "uvicorn[standard]>=0.30",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.0", "httpx>=0.27", "reportlab>=4.0", "pillow>=10.0"]

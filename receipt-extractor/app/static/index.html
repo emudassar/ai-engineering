@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Receipt Extractor · Receipts to expense sheet</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231F3864'/><path d='M30 22h40v58l-7-5-6 5-7-5-6 5-7-5-7 5z' fill='white'/></svg>">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+  <!-- ===================== Top bar ===================== -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-2-1.5L14 21l-2-1.5L10 21l-2-1.5L6 21z"/><path d="M9 8h6M9 12h6M9 16h3" class="logo-lines"/></svg>
+        </div>
+        <span>Receipt Extractor</span>
+      </div>
+      <div id="server-status" class="status-pill status-checking">
+        <span class="dot"></span><span class="label">Checking server…</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ===================== Hero ===================== -->
+    <section class="hero">
+      <h1>Turn a pile of receipts into a <span class="accent">clean expense sheet</span></h1>
+      <p>Upload receipt PDFs or photos. AI reads the date, vendor, amount, tax, currency and category,
+         then hands you a ready-to-share Excel report.</p>
+      <div class="features">
+        <span class="feature">📄 PDFs &amp; photos</span>
+        <span class="feature">⚠️ Missing fields flagged, never guessed</span>
+        <span class="feature">📊 Excel report with charts</span>
+      </div>
+    </section>
+
+    <!-- ===================== Upload card ===================== -->
+    <section class="card upload-card">
+      <label id="dropzone" class="dropzone" for="file-input">
+        <input id="file-input" type="file" multiple hidden>
+        <div class="dropzone-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
+        </div>
+        <p class="dropzone-title">Drag &amp; drop receipts here, or <span class="link">browse</span></p>
+        <p id="dropzone-hint" class="dropzone-hint">PDF, PNG, JPG, WEBP</p>
+      </label>
+
+      <!-- Files waiting to be processed -->
+      <ul id="queue" class="queue"></ul>
+
+      <div class="upload-actions">
+        <span id="queue-summary" class="muted">No files selected yet</span>
+        <div class="buttons">
+          <button id="clear-btn" class="btn btn-ghost" disabled>Clear</button>
+          <button id="extract-btn" class="btn btn-primary" disabled>Extract receipts</button>
+        </div>
+      </div>
+
+      <!-- Progress bar (shown while extracting) -->
+      <div id="progress" class="progress" hidden>
+        <div class="progress-text">
+          <span id="progress-label">Starting…</span>
+          <span id="progress-count">0 / 0</span>
+        </div>
+        <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+      </div>
+    </section>
+
+    <!-- ===================== Results ===================== -->
+    <section id="results" class="results" hidden>
+      <div class="results-header">
+        <div>
+          <h2>Results</h2>
+          <p class="muted">Yellow rows need a quick check. Nothing was guessed.</p>
+        </div>
+        <div class="buttons">
+          <button id="csv-btn" class="btn btn-ghost" disabled>Download CSV</button>
+          <button id="xlsx-btn" class="btn btn-success" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+            Download Excel report
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI cards -->
+      <div class="kpis">
+        <div class="kpi kpi-blue"><span class="kpi-label">Receipts</span><span id="kpi-total" class="kpi-value">0</span></div>
+        <div class="kpi kpi-green"><span class="kpi-label">Ready</span><span id="kpi-ok" class="kpi-value">0</span></div>
+        <div class="kpi kpi-amber"><span class="kpi-label">Needs review</span><span id="kpi-review" class="kpi-value">0</span></div>
+        <div class="kpi kpi-red"><span class="kpi-label">Errors</span><span id="kpi-error" class="kpi-value">0</span></div>
+        <div class="kpi kpi-navy"><span id="kpi-spent-label" class="kpi-label">Total spent</span><span id="kpi-spent" class="kpi-value">–</span></div>
+      </div>
+
+      <!-- Filter tabs + table -->
+      <div class="card table-card">
+        <div id="tabs" class="tabs">
+          <button class="tab active" data-filter="all">All <span class="count" data-count="all">0</span></button>
+          <button class="tab" data-filter="ok">Ready <span class="count" data-count="ok">0</span></button>
+          <button class="tab" data-filter="needs_review">Needs review <span class="count" data-count="needs_review">0</span></button>
+          <button class="tab" data-filter="error">Errors <span class="count" data-count="error">0</span></button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>File</th><th>Date</th><th>Vendor</th><th>Category</th>
+                <th class="num">Amount</th><th class="num">Tax</th><th>Status</th><th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+          <p id="empty-filter" class="empty" hidden>No receipts in this view.</p>
+        </div>
+      </div>
+
+      <div class="start-over">
+        <button id="restart-btn" class="btn btn-ghost">↺ Start over</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer container">
+    Built with FastAPI · Pydantic · Groq. Uploads are processed in memory and not stored.
+  </footer>
+
+  <!-- Small pop-up messages -->
+  <div id="toasts" class="toasts"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
