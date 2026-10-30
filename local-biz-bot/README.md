@@ -78,16 +78,18 @@ uv run python -m app.onboard http://localhost:8000
 uv run python -m app.leads localhost-8000
 ```
 
-## Deploy to Hugging Face Spaces (free, recommended)
+## Deploy to Render (free, recommended)
 
-A Docker Space runs the whole app in one container with 16 GB RAM, so the local embedding model fits.
+A Render web service runs the whole app (website + API) as one normal Python server.
 
-1. Create a Space with SDK **Docker** and add the two files from `huggingface/` (`Dockerfile`, `README.md`).
-   The Dockerfile clones this GitHub repo, so later pushes go live with **Settings → Factory rebuild**.
-2. In **Settings → Variables and secrets** add the secret `GROQ_API_KEY` (and `ADMIN_KEY` for the dashboard).
-3. On startup the app adds its own `*.hf.space` address as a site (`onboard_space()` in `app/onboard.py`), so the
-   live demo works without the dashboard. A free Space's disk is wiped on restart, so leads are lost unless you
-   also add `QDRANT_URL` and `QDRANT_API_KEY` (Qdrant Cloud). The Space sleeps after ~48 h without visitors.
+1. In Render choose **New → Blueprint** and pick this GitHub repo. `render.yaml` at the repo root describes the
+   service (free plan, root directory `local-biz-bot`).
+2. Render asks for the secrets: `GROQ_API_KEY`, `ADMIN_KEY`, `QDRANT_URL`, `QDRANT_API_KEY`. Use Qdrant Cloud:
+   the free service's disk is wiped on every deploy and restart.
+3. On startup the app adds its own `*.onrender.com` address as a site (`onboard_self()` in `app/onboard.py`), so the
+   live demo works without the dashboard. Every push to `main` redeploys.
+
+The free service sleeps after 15 minutes without visitors; the next visit wakes it in about a minute.
 
 ## Deploy to Vercel
 

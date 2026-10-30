@@ -35,7 +35,7 @@ def onboard(url, public_url=None):
     """Crawl, extract and save one website. Used by this CLI and by the dashboard.
 
     public_url: the address visitors use, when we crawl the site through another
-    address (on Hugging Face we crawl localhost but visitors come from *.hf.space).
+    address (on Render we crawl localhost but visitors come from *.onrender.com).
     """
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https") or not parsed.netloc:
@@ -62,16 +62,17 @@ def onboard(url, public_url=None):
     return site_id
 
 
-def onboard_space():
-    """Hugging Face Spaces only: add the product website to its own chatbot.
+def onboard_self():
+    """Render only: add the product website to its own chatbot.
 
-    A free Space loses its disk on every restart, so without this the live demo
-    would forget the site. Runs in a background thread once the server is up.
+    Without this, a fresh deploy would show a chatbot that knows nothing until
+    someone adds the site in the dashboard. Runs in a background thread once the
+    server is up; RENDER_EXTERNAL_URL and PORT are set by Render.
     """
-    public_url = f"https://{os.environ['SPACE_HOST']}"
-    local_url = f"http://localhost:{os.getenv('PORT', '7860')}"
+    public_url = os.environ["RENDER_EXTERNAL_URL"]
+    local_url = f"http://localhost:{os.getenv('PORT', '10000')}"
     if get_site(make_site_id(public_url)) is not None:
-        return  # already there (e.g. Qdrant Cloud is used)
+        return  # already onboarded (Qdrant Cloud keeps it between deploys)
 
     for _ in range(60):  # wait for uvicorn to start serving
         try:

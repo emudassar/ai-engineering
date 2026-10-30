@@ -29,7 +29,7 @@ CHUNK_WORDS = 150  # words per text chunk
 TOP_K = 4          # chunks retrieved for each question
 
 # Where the backend is reachable. Used to print the <script> snippet.
-BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+BACKEND_URL = os.getenv("BACKEND_URL") or os.getenv("RENDER_EXTERNAL_URL") or "http://localhost:8000"
 
 # ---------------- Clients ----------------
 groq_client = Groq()  # reads GROQ_API_KEY from the environment

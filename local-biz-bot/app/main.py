@@ -25,7 +25,7 @@ from pydantic import BaseModel, Field
 from app.admin import router as admin_router
 from app.chat import answer_question
 from app.config import PROJECT_DIR
-from app.onboard import onboard_space
+from app.onboard import onboard_self
 from app.store import get_site, save_lead, setup_collection
 
 setup_collection()
@@ -38,10 +38,10 @@ app = FastAPI(title="Local Biz Bot")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["POST"], allow_headers=["*"])
 app.include_router(admin_router)
 
-# On Hugging Face Spaces (SPACE_HOST is set there), the product site adds itself
-# to its own chatbot at startup. See onboard_space().
-if os.getenv("SPACE_HOST"):
-    threading.Thread(target=onboard_space, daemon=True).start()
+# On Render (RENDER_EXTERNAL_URL is set there), the product site adds itself
+# to its own chatbot at startup. See onboard_self().
+if os.getenv("RENDER_EXTERNAL_URL"):
+    threading.Thread(target=onboard_self, daemon=True).start()
 
 
 # ---------------- Request bodies (validated by Pydantic) ----------------
