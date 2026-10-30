@@ -4,23 +4,28 @@ main.py - the web API that the chat widget talks to.
 Run it with:  uv run uvicorn app.main:app --port 8000
 
 Endpoints:
-  GET  /                  - the owner dashboard (dashboard/ folder)
-  GET  /static/widget.js  - the chat widget the business pastes into its site
   POST /chat              - answer a visitor question
   POST /lead              - save a "please call me back" request
   /admin/...              - dashboard API, see admin.py
+  everything else         - files in public/: the product website, the owner
+                            dashboard (/dashboard/) and the widget (/static/widget.js)
+
+On Vercel, public/ is served by Vercel's CDN and only the API routes above
+reach this app (see vercel.json and api/index.py).
 """
+import os
+import threading
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from app.admin import router as admin_router
 from app.chat import answer_question
 from app.config import PROJECT_DIR
+from app.onboard import onboard_space
 from app.store import get_site, save_lead, setup_collection
 
 setup_collection()
@@ -31,16 +36,12 @@ app = FastAPI(title="Local Biz Bot")
 # browser needs CORS permission. We allow every origin here and do the real
 # per-site check in check_origin() below.
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["POST"], allow_headers=["*"])
-
-# Serve widget/widget.js at /static/widget.js and the dashboard at /dashboard/
-app.mount("/static", StaticFiles(directory=PROJECT_DIR / "widget"), name="static")
-app.mount("/dashboard", StaticFiles(directory=PROJECT_DIR / "dashboard", html=True), name="dashboard")
 app.include_router(admin_router)
 
-
-@app.get("/", include_in_schema=False)
-def home():
-    return RedirectResponse("/dashboard/")
+# On Hugging Face Spaces (SPACE_HOST is set there), the product site adds itself
+# to its own chatbot at startup. See onboard_space().
+if os.getenv("SPACE_HOST"):
+    threading.Thread(target=onboard_space, daemon=True).start()
 
 
 # ---------------- Request bodies (validated by Pydantic) ----------------
@@ -58,7 +59,7 @@ class ChatRequest(BaseModel):
 class LeadRequest(BaseModel):
     site_id: str
     name: str = Field(min_length=1, max_length=100)
-    phone: str = Field(min_length=5, max_length=30)
+    phone: str = Field(min_length=5, max_length=100)  # phone number or email
     question: str = Field(default="", max_length=500)
 
 
@@ -93,3 +94,11 @@ def lead(body: LeadRequest, request: Request):
     check_origin(request, body.site_id)
     save_lead(body.site_id, body.name, body.phone, body.question)
     return {"ok": True}
+
+
+# ---------------- Website files ----------------
+# Mounted last so the API routes above win. html=True serves index.html for "/"
+# and 404.html for unknown pages. Skipped when public/ isn't bundled (Vercel).
+PUBLIC_DIR = PROJECT_DIR / "public"
+if PUBLIC_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=PUBLIC_DIR, html=True), name="site")

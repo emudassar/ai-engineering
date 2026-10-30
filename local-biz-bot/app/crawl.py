@@ -71,6 +71,10 @@ def clean_page(html):
     """Return the readable text of a page, plus phone numbers and emails from its links."""
     soup = BeautifulSoup(html, "html.parser")
 
+    # Site owners can hide parts of a page from the bot (e.g. example mockups) with data-nobot.
+    for tag in soup.select("[data-nobot]"):
+        tag.decompose()
+
     # tel: and mailto: links are the most reliable contact details, so grab them first.
     phones = [a["href"][4:].strip() for a in soup.select('a[href^="tel:"]')]
     emails = [a["href"][7:].split("?")[0].strip() for a in soup.select('a[href^="mailto:"]')]

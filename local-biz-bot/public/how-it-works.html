@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How it works - Local Biz Bot</title>
+  <meta name="description" content="How Local Biz Bot reads a business website, builds a business profile, answers visitor questions with retrieval, and hands over to the owner with a call-back form.">
+  <meta property="og:title" content="How it works - Local Biz Bot">
+  <meta property="og:description" content="How Local Biz Bot reads a business website, builds a business profile, answers visitor questions with retrieval, and hands over to the owner with a call-back form.">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg></span> Local Biz Bot</a>
+    <div class="menu">
+      <nav class="main-nav" aria-label="Main">
+        <a href="/features.html">Features</a>
+        <a href="/how-it-works.html">How it works</a>
+        <a href="/use-cases.html">Use cases</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <div class="header-cta">
+        <a class="btn ghost small" href="/dashboard/">Log in</a>
+        <a class="btn primary small" href="/contact.html">Get started</a>
+      </div>
+    </div>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+<main>
+<section class="page-hero">
+  <div class="wrap">
+    <span class="eyebrow">How it works</span>
+    <h1>From your website address to a working assistant.</h1>
+    <p class="lead-text">Two parts: a one-time setup that reads your website, and the chat that answers every
+      visitor question. Here's what happens in each.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap split" style="align-items:start">
+    <div class="reveal">
+      <span class="eyebrow">Part 1 · Setup</span>
+      <h2>Reading your website</h2>
+      <p class="lead-text">Done once, from the owner dashboard. Run it again any time your website changes.</p>
+    </div>
+    <div class="flow">
+      <div class="flow-item reveal"><div class="num">1</div><div class="card"><h3>Find your pages</h3><p>Local Biz Bot looks for your sitemap.xml (including WordPress sitemaps). If there isn't one, it follows the links on your homepage.</p></div></div>
+      <div class="flow-item reveal"><div class="num">2</div><div class="card"><h3>Read and clean</h3><p>It downloads up to 30 pages from your domain and keeps the readable text, removing menus, scripts and styling. Phone and email links are collected as reliable contact details.</p></div></div>
+      <div class="flow-item reveal"><div class="num">3</div><div class="card"><h3>Build your business profile</h3><p>Your homepage and your contact, about, services and pricing pages are read by an AI model that fills in a fixed profile: name, phone, email, address, time zone, services, service areas, hours and prices. It's told never to guess.</p></div></div>
+      <div class="flow-item reveal"><div class="num">4</div><div class="card"><h3>Index everything else</h3><p>All page text is split into small chunks and stored in a vector database, searchable by meaning. Repeated headers and footers are stored only once.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section soft">
+  <div class="wrap split" style="align-items:start">
+    <div class="reveal">
+      <span class="eyebrow">Part 2 · Every question</span>
+      <h2>Answering a visitor</h2>
+      <p class="lead-text">Each question gets a fresh, grounded answer in a second or two.</p>
+    </div>
+    <div class="flow">
+      <div class="flow-item reveal"><div class="num">1</div><div class="card"><h3>Check the website</h3><p>The request must come from the business's own domain. Requests from anywhere else are blocked.</p></div></div>
+      <div class="flow-item reveal"><div class="num">2</div><div class="card"><h3>Gather the facts</h3><p>The assistant gets three things: the business profile, an "open or closed right now" sentence calculated in code, and the four website chunks closest in meaning to the question.</p></div></div>
+      <div class="flow-item reveal"><div class="num">3</div><div class="card"><h3>Answer, or hand over</h3><p>The AI answers in one to three sentences using only those facts. If the answer isn't there, it says so and marks the conversation for a hand-over.</p></div></div>
+      <div class="flow-item reveal"><div class="num">4</div><div class="card"><h3>Capture the lead</h3><p>On a hand-over, the visitor sees a call-back form. Their name, phone or email and question are saved for the owner.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section night">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Under the hood</span>
+      <h2>Simple, proven building blocks</h2>
+      <p class="lead-text">No heavy frameworks. Every part does one job.</p>
+    </div>
+    <div class="grid c4">
+      <div class="card reveal"><h3>FastAPI</h3><p>The Python web API for the chat, leads and the owner dashboard.</p></div>
+      <div class="card reveal"><h3>Groq LLM</h3><p>A fast large language model that writes the answers and extracts the profile, returning strict JSON.</p></div>
+      <div class="card reveal"><h3>Qdrant</h3><p>Vector database holding page chunks, business profiles and leads, separated per business.</p></div>
+      <div class="card reveal"><h3>FastEmbed</h3><p>Turns text into vectors (all-MiniLM-L6-v2) so questions match pages by meaning.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Installing</span>
+      <h2>Where to paste the code</h2>
+      <p class="lead-text">Paste the snippet from your dashboard just before the closing &lt;/body&gt; tag of your site.</p>
+    </div>
+    <div class="grid c3">
+      <div class="card reveal"><div class="icon "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg></div><h3>WordPress</h3><p>Use a header and footer plugin (such as WPCode) and paste the snippet into the footer section.</p></div>
+      <div class="card reveal"><div class="icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><h3>Squarespace, Webflow, Shopify</h3><p>Paste it into the site-wide footer code injection or theme.liquid, before &lt;/body&gt;.</p></div>
+      <div class="card reveal"><div class="icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></div><h3>Custom HTML</h3><p>Add it before &lt;/body&gt; on every page, or in your shared footer template.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="cta reveal">
+      <span class="eyebrow">Ready when your customers are</span>
+      <h2>Let your website answer the questions you're too busy to.</h2>
+      <p class="lead-text">Send us your website address. We'll set up your assistant and send you one line of code to paste.</p>
+      <div class="btn-row">
+        <a class="btn primary" href="/contact.html">Get your assistant</a>
+        <button class="btn outline-light" data-open-chat>Try the live demo</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/"><span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg></span> Local Biz Bot</a>
+        <p>An AI assistant that learns a local business from its own website and answers customers day and night,
+           without ever making up an answer.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/how-it-works.html">How it works</a></li>
+          <li><a href="/use-cases.html">Use cases</a></li>
+          <li><a href="/dashboard/">Owner dashboard</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Try it</h4>
+        <ul>
+          <li><a href="#" data-open-chat>Chat with the live demo</a></li>
+          <li><a href="/contact.html">Book a setup</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Local Biz Bot. Built by M Mudassar.</span>
+      <span>Made for small businesses that can't answer the phone all day.</span>
+    </div>
+  </div>
+</footer>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

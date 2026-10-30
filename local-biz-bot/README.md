@@ -5,9 +5,11 @@ It reads the business's own website and answers visitor questions about prices,
 hours, services and service areas. When it doesn't know an answer, it gives the
 phone number and offers a call-back form instead of guessing.
 
-There are two interfaces:
-- **Owner dashboard** (`/dashboard`): add a website, see what the bot learned, test it, copy the install code, and see leads.
-- **Chat widget** (`widget.js`): the bubble visitors use on the business website.
+There are three interfaces:
+- **Product website** (`/`): the Local Biz Bot landing site (home, features, how it works, use cases, about,
+  contact, privacy). It runs its own chatbot, so the site itself is the live demo, and its contact form saves leads.
+- **Owner dashboard** (`/dashboard/`): add a website, see what the bot learned, test it, copy the install code, and see leads.
+- **Chat widget** (`/static/widget.js`): the bubble visitors use on the business website.
 
 ## How it works
 
@@ -40,35 +42,70 @@ website URL                                    widget.js on the business site
 | `app/hours.py` | "Are you open now?" calculated in code with time zones |
 | `app/store.py` | Every Qdrant read and write |
 | `app/chat.py` | Builds the prompt and answers one question |
-| `app/main.py` | FastAPI: `/chat`, `/lead`, serves the widget and dashboard |
+| `app/main.py` | FastAPI: `/chat`, `/lead`, and serves `public/` locally |
 | `app/admin.py` | Dashboard API under `/admin`, protected by `ADMIN_KEY` |
 | `app/onboard.py` | Add or refresh a website (used by the dashboard and as a CLI) |
 | `app/leads.py` | CLI: show call-back requests |
-| `dashboard/` | Owner dashboard: `index.html`, `style.css`, `app.js` (plain JS) |
-| `widget/widget.js` | The chat bubble (plain JS, Shadow DOM) |
-| `sample_site/` | A made-up plumbing business for testing |
+| `api/index.py` | Vercel entry point (imports the FastAPI app) |
+| `public/*.html`, `public/assets/` | The product website (plain HTML/CSS/JS) |
+| `public/dashboard/` | Owner dashboard: `index.html`, `style.css`, `app.js` (plain JS) |
+| `public/static/widget.js` | The chat bubble (plain JS, Shadow DOM) |
+| `vercel.json` | Sends `/chat`, `/lead`, `/admin/*` to the Python function; everything else is static |
 
-## Run it
+## Run it locally
 
-1. Put `GROQ_API_KEY` and `ADMIN_KEY` in a `.env` file (see `.env.example`). Without `QDRANT_URL`, data is stored in a local `qdrant_data/` folder.
-2. Serve the sample business site:
-   ```bash
-   uv run python -m http.server 8001 --directory sample_site
-   ```
-3. In a second terminal, start the API:
+1. Copy `.env.example` to `.env` and fill in `GROQ_API_KEY` and `ADMIN_KEY`. Without `QDRANT_URL`, data is stored
+   in a local `qdrant_data/` folder. Only this folder's `.env` is read.
+2. Start the app:
    ```bash
    uv run uvicorn app.main:app --port 8000
    ```
-4. Open http://localhost:8000, sign in with your `ADMIN_KEY`, click **+ Add website** and enter `http://localhost:8001`.
-5. Open http://localhost:8001 and click the chat bubble.
+3. Open http://localhost:8000/dashboard/, sign in with your `ADMIN_KEY`, click **+ Add website** and enter
+   `http://localhost:8000`. The bot reads the product website.
+4. Open http://localhost:8000 and click the chat bubble, or any "Try the live demo" button.
 
-The same steps also work from the command line (with local Qdrant, stop the API first, since only one process can open the local folder):
+The widget on the product site works out its `site_id` from the current domain (`public/assets/site.js`), so the
+same HTML works on localhost and on the live domain, as long as that domain has been added in the dashboard.
+
+Parts of a page that the bot should NOT learn from (for example the example conversations and the dashboard mockup
+on the homepage) are marked with a `data-nobot` attribute, and the crawler skips them.
+
+CLI equivalents (with local Qdrant, stop the API first, since only one process can open the local folder):
 ```bash
-uv run python -m app.onboard http://localhost:8001
+uv run python -m app.onboard http://localhost:8000
 ```
 ```bash
-uv run python -m app.leads localhost-8001
+uv run python -m app.leads localhost-8000
 ```
+
+## Deploy to Hugging Face Spaces (free, recommended)
+
+A Docker Space runs the whole app in one container with 16 GB RAM, so the local embedding model fits.
+
+1. Create a Space with SDK **Docker** and add the two files from `huggingface/` (`Dockerfile`, `README.md`).
+   The Dockerfile clones this GitHub repo, so later pushes go live with **Settings → Factory rebuild**.
+2. In **Settings → Variables and secrets** add the secret `GROQ_API_KEY` (and `ADMIN_KEY` for the dashboard).
+3. On startup the app adds its own `*.hf.space` address as a site (`onboard_space()` in `app/onboard.py`), so the
+   live demo works without the dashboard. A free Space's disk is wiped on restart, so leads are lost unless you
+   also add `QDRANT_URL` and `QDRANT_API_KEY` (Qdrant Cloud). The Space sleeps after ~48 h without visitors.
+
+## Deploy to Vercel
+
+1. Push this folder to GitHub (or run `vercel` from inside it). In Vercel, import the repo and set
+   **Root Directory** to `local-biz-bot`. Framework preset: **Other**.
+2. In **Settings → Environment Variables** add `GROQ_API_KEY`, `ADMIN_KEY`, `QDRANT_URL`, `QDRANT_API_KEY`
+   (Qdrant Cloud is required: serverless functions can't keep a local database folder), and
+   `BACKEND_URL` = your deployment URL, e.g. `https://local-biz-bot.vercel.app`.
+3. Deploy. Then open `https://<your-domain>/dashboard/`, sign in, and **+ Add website** with
+   `https://<your-domain>`, so the site's own chatbot and contact form start working.
+4. If you later add a custom domain, add that domain in the dashboard too (each domain gets its own `site_id`).
+
+Notes:
+- Dependencies come from `requirements.txt` (made with `uv export --no-hashes --no-dev --no-emit-project -o requirements.txt`;
+  run it again after changing dependencies).
+- The embedding model (~90 MB) is downloaded on each cold start, so the first chat after a quiet period is slower.
+- Adding a website crawls for 20-60 s; `vercel.json` allows the function 60 s.
+- If the build complains about the Python version, change `.python-version` to `3.12`.
 
 ## Design decisions (interview notes)
 
@@ -83,7 +120,7 @@ uv run python -m app.leads localhost-8001
 - **Prompt injection.** Website text is treated as data. Visitors can only send `user`/`assistant` messages, never `system`.
 - **Safe widget.** Shadow DOM isolates the CSS, and replies are inserted with `textContent`, so they can't inject HTML.
 
-## Test results (sample site)
+## Test results (plumbing test site, earlier version)
 
 | Question | Result |
 |---|---|

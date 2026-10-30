@@ -12,9 +12,11 @@ from fastembed import TextEmbedding
 from groq import Groq
 from qdrant_client import QdrantClient
 
-load_dotenv()  # finds a .env file in this folder or any parent folder
-
 PROJECT_DIR = Path(__file__).parent.parent
+
+# Only this project's .env, never one from a parent folder. On Vercel there is no
+# .env file: the same variables are set in the project's Environment Variables.
+load_dotenv(PROJECT_DIR / ".env")
 
 # ---------------- Settings ----------------
 LLM_MODEL = "openai/gpt-oss-120b"
