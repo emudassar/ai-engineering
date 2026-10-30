@@ -1,0 +1,18 @@
+[project]
+name = "local-biz-bot"
+version = "0.1.0"
+description = "Embeddable chatbot that answers questions about a local business using its own website"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "fastapi>=0.162.0",
+    "fastembed>=0.9.1",
+    "groq>=1.7.0",
+    "httpx>=0.28.1",
+    "pydantic>=2.14.2",
+    "python-dotenv>=1.2.4",
+    "qdrant-client>=1.20.0",
+    "tzdata>=2026.6",
+    "uvicorn>=0.54.0",
+]

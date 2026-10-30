@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local Biz Bot · Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ============ Login screen ============ -->
+  <div id="login" class="login" hidden>
+    <form id="login-form" class="card login-card">
+      <div class="brand"><span class="logo">💬</span> Local Biz Bot</div>
+      <p class="muted">Enter the admin key from your <code>.env</code> file.</p>
+      <input id="login-key" type="password" placeholder="Admin key" required autocomplete="current-password">
+      <button class="btn primary">Sign in</button>
+      <p id="login-error" class="error" hidden></p>
+    </form>
+  </div>
+
+  <!-- ============ Main app: sidebar + content ============ -->
+  <div id="app" class="layout" hidden>
+    <aside class="sidebar">
+      <div class="brand"><span class="logo">💬</span> Local Biz Bot</div>
+      <button id="add-site-btn" class="btn primary full">+ Add website</button>
+      <div class="sidebar-label">Your websites</div>
+      <nav id="site-list"></nav>
+      <button id="logout-btn" class="btn ghost full sidebar-bottom">Sign out</button>
+    </aside>
+    <main id="content" class="content"></main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
