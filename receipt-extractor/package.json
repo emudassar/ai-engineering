@@ -1,0 +1,13 @@
+{
+  "name": "receipt-extractor-site",
+  "private": true,
+  "description": "Builds public/assets/site.css from tailwind/input.css",
+  "scripts": {
+    "build:css": "tailwindcss -i ./tailwind/input.css -o ./public/assets/site.css --minify",
+    "watch:css": "tailwindcss -i ./tailwind/input.css -o ./public/assets/site.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.0",
+    "tailwindcss": "^4.1.0"
+  }
+}

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Receipt Extractor · Turn receipts into an expense report in seconds</title>
+  <meta name="description" content="Upload receipt PDFs or phone photos. AI reads the date, vendor, amount, tax, currency and category, flags anything missing, and gives you a ready-to-share Excel expense report.">
+  <meta property="og:title" content="Receipt Extractor · Receipts in. Expense report out.">
+  <meta property="og:description" content="AI that turns receipt PDFs and photos into a clean expense sheet. Missing fields are flagged, never guessed.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#f4efe4">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <script src="/assets/site.js"></script>
+
+  <main>
+    <!-- ===================== Hero ===================== -->
+    <section class="overflow-hidden pt-16">
+      <div class="mx-auto grid max-w-[1200px] items-end gap-14 px-6 lg:grid-cols-[1.15fr_.85fr]">
+        <div>
+          <span class="mb-7 inline-flex items-center gap-2.5 rounded border-[1.5px] border-dashed border-ink px-3 py-2 font-mono text-[13px] text-ink">
+            <i class="size-2 rounded-full bg-stamp"></i>PDFs and phone photos · one upload
+          </span>
+          <h1 class="mb-7 text-[clamp(44px,7vw,92px)] leading-[1.02] font-medium tracking-[-.035em]">
+            Receipts in.<br><em class="text-ledger">Expense report</em> out.
+          </h1>
+          <p class="mb-9 max-w-[560px] text-xl leading-relaxed">Stop typing receipts into spreadsheets. Drop in your PDFs and photos. AI reads the
+            <span class="hl">date, vendor, amount, tax, currency and category</span>, then hands you a finished Excel report with charts.</p>
+          <div class="flex flex-wrap items-center gap-4">
+            <a class="btn btn-ink btn-lg" href="/app/">
+              Try it free
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="px-1 font-semibold text-ink underline underline-offset-4 hover:text-stamp" href="#how-it-works">See how it works ↓</a>
+          </div>
+          <ul class="mt-11 mb-0 flex flex-wrap border-y-[1.5px] border-ink lg:mb-[72px]">
+            <li class="flex-[1_1_160px] py-4 pr-4 text-sm text-muted"><b class="block font-serif text-[26px] leading-tight font-medium text-ink">6 fields</b>read from every receipt</li>
+            <li class="flex-[1_1_160px] border-l border-dashed border-line py-4 pr-4 pl-4 text-sm text-muted"><b class="block font-serif text-[26px] leading-tight font-medium text-ink">20 files</b>per batch, mixed formats</li>
+            <li class="flex-[1_1_160px] border-l border-dashed border-line py-4 pl-4 text-sm text-muted"><b class="block font-serif text-[26px] leading-tight font-medium text-ink">0 guesses</b>missing values get flagged</li>
+          </ul>
+        </div>
+
+        <!-- A receipt being "read" -->
+        <div class="relative flex justify-center pt-6 pb-16 lg:pt-0" aria-hidden="true">
+          <div class="zz-top zz-bottom relative w-[330px] -rotate-2 bg-card px-7 pt-7 pb-8 font-mono text-[13.5px] leading-[1.75] text-ink shadow-paper [--zz:var(--color-card)]">
+            <div class="absolute inset-x-2.5 top-[30px] h-0.5 animate-scan bg-stamp shadow-[0_0_14px_3px_rgb(217_72_28/.45)] motion-reduce:hidden"></div>
+            <div class="text-center text-[15px] font-semibold tracking-[.14em]">BLUE BEAN CAFÉ</div>
+            <div class="text-center text-xs text-muted">12 Market St · No. 4821</div>
+            <hr class="my-2.5 border-t-[1.5px] border-dashed border-line">
+            <div class="flex justify-between"><mark class="bg-mustard px-1">14 Oct 2026</mark><span>09:42</span></div>
+            <hr class="my-2.5 border-t-[1.5px] border-dashed border-line">
+            <div class="flex justify-between"><span>Flat white</span><span>4.50</span></div>
+            <div class="flex justify-between"><span>Croissant</span><span>3.80</span></div>
+            <div class="flex justify-between"><span>Oat milk</span><span>0.60</span></div>
+            <hr class="my-2.5 border-t-[1.5px] border-dashed border-line">
+            <div class="flex justify-between"><span>Tax</span><mark class="bg-mustard px-1">0.71</mark></div>
+            <div class="flex justify-between text-[15px] font-semibold"><span>TOTAL USD</span><mark class="bg-mustard px-1">9.61</mark></div>
+            <hr class="my-2.5 border-t-[1.5px] border-dashed border-line">
+            <div class="text-center text-xs text-muted">** THANK YOU **</div>
+
+            <div class="absolute top-[44%] -right-8 -rotate-[14deg] rounded-md border-[3px] border-stamp bg-card/75 px-3.5 py-2.5 font-mono text-lg leading-none font-bold tracking-[.16em] text-stamp max-sm:-right-2">
+              EXTRACTED<small class="mt-1 block text-[10px] font-medium tracking-widest">6 / 6 FIELDS</small>
+            </div>
+          </div>
+          <div class="absolute bottom-6 left-0 w-[190px] rotate-3 bg-mustard px-3.5 py-3 font-mono text-[12.5px] leading-snug text-ink shadow-hard-sm lg:-left-2.5">
+            <b class="block text-[13px]">Category → Meals</b>Picked from the line items, not guessed.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== The row it becomes ===================== -->
+    <section class="bg-ink text-[#d7d1c3]" aria-label="Example of an extracted row">
+      <div class="mx-auto grid max-w-[1200px] items-center gap-7 px-6 py-5 md:grid-cols-[auto_1fr]">
+        <span class="font-mono text-xs leading-snug tracking-[.08em] text-mustard uppercase">That receipt,<br class="max-md:hidden"> as one clean row →</span>
+        <div class="grid grid-cols-3 border border-[#3f3b33] font-mono text-[13px] md:grid-cols-6 [&>div]:min-w-0 [&>div]:border-[#3f3b33] [&>div]:px-3 [&>div]:py-2.5 [&>div:not(:last-child)]:border-r max-md:[&>div:nth-child(-n+3)]:border-b max-md:[&>div:nth-child(3)]:border-r-0">
+          <div><small class="mb-1 block text-[10.5px] tracking-[.08em] text-[#8d8676] uppercase">Date</small><b class="block truncate font-medium text-white">2026-10-14</b></div>
+          <div><small class="mb-1 block text-[10.5px] tracking-[.08em] text-[#8d8676] uppercase">Vendor</small><b class="block truncate font-medium text-white">Blue Bean Café</b></div>
+          <div><small class="mb-1 block text-[10.5px] tracking-[.08em] text-[#8d8676] uppercase">Amount</small><b class="block truncate font-medium text-white">9.61</b></div>
+          <div><small class="mb-1 block text-[10.5px] tracking-[.08em] text-[#8d8676] uppercase">Tax</small><b class="block truncate font-medium text-white">0.71</b></div>
+          <div><small class="mb-1 block text-[10.5px] tracking-[.08em] text-[#8d8676] uppercase">Currency</small><b class="block truncate font-medium text-white">USD</b></div>
+          <div><small class="mb-1 block text-[10.5px] tracking-[.08em] text-[#8d8676] uppercase">Category</small><b class="block truncate font-medium text-white">Meals</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== §01 The problem ===================== -->
+    <section class="py-20 md:py-28">
+      <div class="mx-auto max-w-[1200px] px-6">
+        <div class="reveal mb-16 grid gap-5 md:grid-cols-[220px_1fr] md:gap-8">
+          <div class="sec-num"><b>§01</b>The problem</div>
+          <div>
+            <h2 class="h-section max-w-[820px]">Month-end shouldn't mean a <em>shoebox</em> of receipts</h2>
+            <p class="max-w-[640px] text-[19px] text-muted">Crumpled paper, emailed PDFs and blurry photos. Turning them into an expense sheet by hand is slow, boring and easy to get wrong.</p>
+          </div>
+        </div>
+        <ul class="reveal border-t-2 border-ink [&>li]:grid [&>li]:grid-cols-[40px_1fr] [&>li]:items-baseline [&>li]:gap-x-3.5 [&>li]:gap-y-1.5 [&>li]:border-b [&>li]:border-line [&>li]:py-7 md:[&>li]:grid-cols-[70px_1fr_1.3fr_160px] md:[&>li]:gap-6">
+          <li>
+            <span class="font-mono text-[13px] text-muted">L.01</span>
+            <h3 class="text-[28px] font-semibold">Copy, paste, repeat</h3>
+            <p class="text-muted max-md:col-start-2">Opening every receipt and typing the same six fields into a spreadsheet eats your evenings, and it never gets faster.</p>
+            <span class="font-mono text-[22px] text-stamp max-md:col-start-2 md:text-right">− hours</span>
+          </li>
+          <li>
+            <span class="font-mono text-[13px] text-muted">L.02</span>
+            <h3 class="text-[28px] font-semibold">One typo, wrong totals</h3>
+            <p class="text-muted max-md:col-start-2">A misplaced decimal or a swapped date goes unnoticed until your accountant, or the tax office, finds it.</p>
+            <span class="font-mono text-[22px] text-stamp max-md:col-start-2 md:text-right">− accuracy</span>
+          </li>
+          <li>
+            <span class="font-mono text-[13px] text-muted">L.03</span>
+            <h3 class="text-[28px] font-semibold">Unclaimed expenses</h3>
+            <p class="text-muted max-md:col-start-2">Receipts that are "too annoying to log" never get claimed. That's real money and real deductions left behind.</p>
+            <span class="font-mono text-[22px] text-stamp max-md:col-start-2 md:text-right">− money</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== §02 How it works ===================== -->
+    <section id="how-it-works" class="border-t-2 border-ink bg-paper-2 py-20 md:py-28">
+      <div class="mx-auto max-w-[1200px] px-6">
+        <div class="reveal mb-16 grid gap-5 md:grid-cols-[220px_1fr] md:gap-8">
+          <div class="sec-num"><b>§02</b>How it works</div>
+          <div>
+            <h2 class="h-section">From pile to report in <em>three</em> steps</h2>
+            <p class="max-w-[640px] text-[19px] text-muted">No templates to set up, no account to create. If you can drag a file, you can use it.</p>
+          </div>
+        </div>
+        <div class="grid gap-10 md:grid-cols-3 md:gap-0 [&>div]:md:px-8 [&>div:first-child]:md:pl-0 [&>div+div]:max-md:border-t-[1.5px] [&>div+div]:max-md:pt-10 [&>div+div]:md:border-l-[1.5px] [&>div+div]:border-dashed [&>div+div]:border-ink">
+          <div class="reveal">
+            <div class="mb-6 font-serif text-[84px] leading-[.85] tracking-[-.05em] text-ink md:text-[120px]">1<span class="text-stamp">.</span></div>
+            <h3 class="mb-2 text-[26px] font-semibold">Drop your receipts</h3>
+            <p class="text-muted">Drag in up to 20 PDFs, photos or screenshots at once. Mixed formats are fine.</p>
+            <span class="mt-4 inline-block rounded-[3px] border border-line bg-card px-2 py-1 font-mono text-[12.5px] text-ink">.pdf .png .jpg .webp</span>
+          </div>
+          <div class="reveal">
+            <div class="mb-6 font-serif text-[84px] leading-[.85] tracking-[-.05em] text-ink md:text-[120px]">2<span class="text-stamp">.</span></div>
+            <h3 class="mb-2 text-[26px] font-semibold">AI reads every field</h3>
+            <p class="text-muted">Date, vendor, amount, tax, currency and category, checked and cleaned. Anything unclear is flagged for you.</p>
+            <span class="mt-4 inline-block rounded-[3px] border border-line bg-card px-2 py-1 font-mono text-[12.5px] text-ink">status: ok | needs_review</span>
+          </div>
+          <div class="reveal">
+            <div class="mb-6 font-serif text-[84px] leading-[.85] tracking-[-.05em] text-ink md:text-[120px]">3<span class="text-stamp">.</span></div>
+            <h3 class="mb-2 text-[26px] font-semibold">Download the report</h3>
+            <p class="text-muted">A formatted Excel report with totals and charts, or a CSV to import into your accounting tool.</p>
+            <span class="mt-4 inline-block rounded-[3px] border border-line bg-card px-2 py-1 font-mono text-[12.5px] text-ink">expense-report.xlsx</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== §03 Features (bento) ===================== -->
+    <section id="features" class="border-t-2 border-ink py-20 md:py-28">
+      <div class="mx-auto max-w-[1200px] px-6">
+        <div class="reveal mb-16 grid gap-5 md:grid-cols-[220px_1fr] md:gap-8">
+          <div class="sec-num"><b>§03</b>Features</div>
+          <div>
+            <h2 class="h-section">Everything you need, <em>nothing</em> you don't</h2>
+            <p class="max-w-[640px] text-[19px] text-muted">Built for people who want their expenses done, not another tool to learn.</p>
+          </div>
+        </div>
+        <div class="grid gap-[18px] md:grid-cols-6 [&>div]:rounded-md [&>div]:border-[1.5px] [&>div]:border-ink [&>div]:p-7 [&_h3]:mb-2.5 [&_h3]:text-2xl [&_h3]:font-semibold">
+          <div class="reveal bg-ledger text-[#b8cfbf] md:col-span-6 lg:col-span-4 [&_h3]:text-white">
+            <span class="mb-10 block font-mono text-xs tracking-[.08em] text-mustard uppercase">Six clean fields</span>
+            <h3>Real dates and real numbers, ready for formulas</h3>
+            <p>Not text that breaks your spreadsheet. "$1,234.50" and "12,50" become proper numbers.</p>
+            <div class="mt-5 grid grid-cols-3 gap-2 font-mono text-[13px] text-white [&>span]:rounded-[3px] [&>span]:border [&>span]:border-dashed [&>span]:border-white/35 [&>span]:px-2.5 [&>span]:py-2">
+              <span>date</span><span>vendor</span><span>amount</span><span>tax</span><span>currency</span><span>category</span>
+            </div>
+          </div>
+          <div class="reveal bg-mustard text-[#5a4a1c] md:col-span-3 lg:col-span-2">
+            <span class="mb-10 block font-mono text-xs tracking-[.08em] text-ink uppercase">Flagged, never guessed</span>
+            <h3>Missing means missing</h3>
+            <p>If a value isn't on the receipt, the row is marked "needs review" with a note. No invented numbers.</p>
+          </div>
+          <div class="reveal bg-card text-muted md:col-span-3 lg:col-span-2">
+            <span class="mb-10 block font-mono text-xs tracking-[.08em] text-stamp uppercase">Input</span>
+            <h3>PDFs and photos</h3>
+            <p>Digital PDF receipts and phone photos alike. A vision model handles the images.</p>
+          </div>
+          <div class="reveal bg-card text-muted md:col-span-3 lg:col-span-2">
+            <span class="mb-10 block font-mono text-xs tracking-[.08em] text-stamp uppercase">Multi-currency</span>
+            <h3>Never mixed up</h3>
+            <p>Detected per receipt and never added together by mistake.</p>
+            <div class="mt-5 flex flex-wrap gap-1.5 font-mono text-xs font-semibold text-ink [&>span]:rounded-[3px] [&>span]:border-[1.5px] [&>span]:border-ink [&>span]:px-2 [&>span]:py-1">
+              <span>USD</span><span>EUR</span><span>GBP</span><span>PKR</span><span>+ more</span>
+            </div>
+          </div>
+          <div class="reveal bg-ink text-[#a7a091] md:col-span-3 lg:col-span-2 [&_h3]:text-white">
+            <span class="mb-10 block font-mono text-xs tracking-[.08em] text-mustard uppercase">Private by design</span>
+            <h3>Read, then forgotten</h3>
+            <p>Receipts are processed in memory and thrown away. Nothing is saved on our servers.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== §04 Trust the numbers ===================== -->
+    <section class="border-t-2 border-ink bg-paper-2 py-20 md:py-28">
+      <div class="mx-auto grid max-w-[1200px] items-center gap-16 px-6 lg:grid-cols-2">
+        <div class="reveal">
+          <span class="eyebrow">§04 · Trust the numbers</span>
+          <h2 class="h-section">An AI that <em>admits</em> when it isn't sure</h2>
+          <p class="text-[19px] text-muted">Most tools fill every box, even when the receipt is unreadable. Receipt Extractor checks every value and tells you exactly what to look at.</p>
+          <ul class="mt-7 border-b border-dashed border-line [&>li]:grid [&>li]:grid-cols-[34px_1fr] [&>li]:gap-3 [&>li]:border-t [&>li]:border-dashed [&>li]:border-line [&>li]:py-3.5 [&_b]:text-ink">
+            <li><span class="pt-0.5 font-mono text-[13px] font-semibold text-stamp">01</span><div><b>Impossible dates are rejected.</b> 30 February? Flagged, not saved.</div></li>
+            <li><span class="pt-0.5 font-mono text-[13px] font-semibold text-stamp">02</span><div><b>Tax bigger than the total?</b> Caught and marked for review.</div></li>
+            <li><span class="pt-0.5 font-mono text-[13px] font-semibold text-stamp">03</span><div><b>Messy numbers fixed.</b> Thousands separators and decimal commas are cleaned up.</div></li>
+            <li><span class="pt-0.5 font-mono text-[13px] font-semibold text-stamp">04</span><div><b>Bad files don't stop the batch.</b> One broken PDF becomes one error row; the rest still finish.</div></li>
+          </ul>
+        </div>
+        <div class="reveal rounded-md border-[1.5px] border-ink bg-card font-mono shadow-hard" aria-hidden="true">
+          <header class="flex items-center justify-between gap-2.5 border-b-[1.5px] border-ink px-4.5 py-3.5 text-[13px]">
+            <span>cloudnote-invoice.pdf</span><span class="rounded-[3px] bg-mustard px-2 py-1 text-xs font-semibold text-ink">⚠ NEEDS REVIEW</span>
+          </header>
+          <div class="[&>div]:grid [&>div]:grid-cols-[80px_1fr_auto] [&>div]:items-center [&>div]:gap-3 [&>div]:border-b [&>div]:border-dashed [&>div]:border-line [&>div]:px-4.5 [&>div]:py-3 [&>div]:text-sm sm:[&>div]:grid-cols-[110px_1fr_auto] [&_small]:text-[11.5px] [&_small]:tracking-wider [&_small]:text-muted [&_small]:uppercase [&_strong]:font-medium [&_strong]:text-ink">
+            <div><small>Vendor</small><strong>CloudNote Inc.</strong><span class="text-xs text-ok">✓ found</span></div>
+            <div><small>Amount</small><strong>USD 12.00</strong><span class="text-xs text-ok">✓ found</span></div>
+            <div><small>Category</small><span><span class="chip cat-software">Software</span></span><span class="text-xs text-ok">✓ found</span></div>
+            <div class="bg-mustard-soft"><small>Date</small><strong>—</strong><span class="text-xs font-semibold text-warn">missing</span></div>
+            <div><small>Tax</small><strong>—</strong><span class="text-xs text-muted">not printed</span></div>
+          </div>
+          <p class="px-4.5 py-4 font-sans text-[13px]"><b class="font-mono">NOTE:</b> no date is printed on this receipt. Add it before filing so nothing is guessed.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== §05 The deliverable ===================== -->
+    <section class="border-t-2 border-ink py-20 md:py-28">
+      <div class="mx-auto grid max-w-[1200px] items-center gap-16 px-6 lg:grid-cols-2">
+        <div class="reveal lg:order-2">
+          <span class="eyebrow">§05 · The deliverable</span>
+          <h2 class="h-section">A report you'd be <em>proud</em> to send</h2>
+          <p class="text-[19px] text-muted">Not a raw dump. A one-sheet Excel report designed to be read: totals at the top, charts in the middle, every receipt below.</p>
+          <ul class="mt-7 border-b border-dashed border-line [&>li]:grid [&>li]:grid-cols-[34px_1fr] [&>li]:gap-3 [&>li]:border-t [&>li]:border-dashed [&>li]:border-line [&>li]:py-3.5 [&_b]:text-ink">
+            <li><span class="pt-0.5 font-mono text-[13px] font-semibold text-stamp">A</span><div><b>Summary cards</b> for total spent, receipt count and items to review.</div></li>
+            <li><span class="pt-0.5 font-mono text-[13px] font-semibold text-stamp">B</span><div><b>Spend by category</b> with a pie chart, so the story is obvious at a glance.</div></li>
+            <li><span class="pt-0.5 font-mono text-[13px] font-semibold text-stamp">C</span><div><b>Colour-coded rows,</b> frozen headers and filters. No "####" columns.</div></li>
+          </ul>
+          <a class="btn btn-ledger mt-8" href="/app/">Create your report</a>
+        </div>
+        <div class="reveal overflow-hidden rounded-md border-[1.5px] border-ink bg-card shadow-hard lg:order-1" aria-hidden="true">
+          <div class="flex items-center gap-2.5 bg-ledger px-3.5 py-2.5 font-mono text-[13px] text-white">
+            <span class="grid size-[22px] place-items-center rounded-[3px] bg-white font-bold text-ledger">X</span>expense-report.xlsx
+          </div>
+          <div class="grid grid-cols-[34px_repeat(5,1fr)] border-b border-line bg-paper-2 text-center font-mono text-[11px] text-muted [&>span]:border-r [&>span]:border-line [&>span]:py-1">
+            <span></span><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span>
+          </div>
+          <div class="p-5">
+            <div class="mb-3.5 font-serif text-xl font-semibold text-ink">Expense Report · October 2026</div>
+            <div class="mb-4 grid grid-cols-2 border border-line sm:grid-cols-4 [&>div]:border-r [&>div]:border-line [&>div]:px-3 [&>div]:py-2.5 [&_small]:block [&_small]:font-mono [&_small]:text-[10.5px] [&_small]:tracking-wider [&_small]:text-muted [&_small]:uppercase [&_b]:font-mono [&_b]:text-[22px] [&_b]:font-medium">
+              <div><small>Total spent</small><b class="text-ink">$1,284</b></div>
+              <div><small>Receipts</small><b class="text-ink">18</b></div>
+              <div><small>Ready</small><b class="text-ok">16</b></div>
+              <div class="border-r-0"><small>Review</small><b class="text-warn">2</b></div>
+            </div>
+            <div class="grid gap-3.5 sm:grid-cols-[1fr_1.2fr] [&_small]:mb-2.5 [&_small]:block [&_small]:font-mono [&_small]:text-[11px] [&_small]:tracking-wider [&_small]:text-muted [&_small]:uppercase">
+              <div class="border border-line p-3.5">
+                <small>Share by category</small>
+                <div class="mx-auto mb-3 size-28 rounded-full bg-[conic-gradient(#ed7d31_0_34%,#5b9bd5_0_58%,#8064a2_0_76%,#70ad47_0_90%,#a5a5a5_0)]"></div>
+                <div class="flex flex-wrap justify-center gap-x-2.5 gap-y-1 font-mono text-[11px] text-muted">
+                  <span><i class="mr-1 inline-block size-2 bg-[#ed7d31]"></i>Meals</span>
+                  <span><i class="mr-1 inline-block size-2 bg-[#5b9bd5]"></i>Travel</span>
+                  <span><i class="mr-1 inline-block size-2 bg-[#8064a2]"></i>Software</span>
+                  <span><i class="mr-1 inline-block size-2 bg-[#70ad47]"></i>Office</span>
+                </div>
+              </div>
+              <div class="border border-line p-3.5">
+                <small>Spend by category</small>
+                <div class="grid gap-2.5 font-mono text-[11.5px] text-muted [&>div]:grid [&>div]:grid-cols-[64px_1fr] [&>div]:items-center [&>div]:gap-2 [&_i]:block [&_i]:h-3">
+                  <div>Meals<i class="w-[92%] bg-[#ed7d31]"></i></div>
+                  <div>Travel<i class="w-[66%] bg-[#5b9bd5]"></i></div>
+                  <div>Software<i class="w-1/2 bg-[#8064a2]"></i></div>
+                  <div>Office<i class="w-[38%] bg-[#70ad47]"></i></div>
+                  <div>Other<i class="w-[22%] bg-[#a5a5a5]"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== §06 Use cases (index cards) ===================== -->
+    <section id="use-cases" class="border-t-2 border-ink bg-paper-2 py-20 md:py-28">
+      <div class="mx-auto max-w-[1200px] px-6">
+        <div class="reveal mb-16 grid gap-5 md:grid-cols-[220px_1fr] md:gap-8">
+          <div class="sec-num"><b>§06</b>Use cases</div>
+          <div>
+            <h2 class="h-section">Made for anyone with <em>receipts</em></h2>
+            <p class="max-w-[640px] text-[19px] text-muted">Ten receipts a month or a box from a whole team, the workflow is the same.</p>
+          </div>
+        </div>
+        <div class="grid gap-[18px] sm:grid-cols-2 lg:grid-cols-4 [&>article]:flex [&>article]:flex-col [&>article]:rounded-md [&>article]:border-[1.5px] [&>article]:border-ink [&>article]:bg-card [&>article]:transition [&>article:hover]:-translate-x-0.5 [&>article:hover]:-translate-y-0.5 [&>article:hover]:shadow-hard [&_header]:flex [&_header]:justify-between [&_header]:border-b-[1.5px] [&_header]:border-ink [&_header]:px-4.5 [&_header]:py-3 [&_header]:font-mono [&_header]:text-xs [&_header]:tracking-wider [&_header]:uppercase [&_header_span]:text-stamp [&_h3]:mb-2 [&_h3]:text-[23px] [&_h3]:font-semibold [&_p]:text-[15px] [&_p]:text-muted [&_footer]:border-t [&_footer]:border-dashed [&_footer]:border-line [&_footer]:px-4.5 [&_footer]:py-3.5 [&_footer]:font-mono [&_footer]:text-[13px] [&_footer]:text-ink">
+          <article class="reveal">
+            <header>Freelancers <span>A</span></header>
+            <div class="ruled flex-1 px-4.5 py-5.5">
+              <h3>Get your weekends back at tax time</h3>
+              <p>Coffee meetings, subscriptions, train tickets. Upload the year's pile and get a categorised sheet your accountant can use straight away.</p>
+            </div>
+            <footer>→ every deductible claimed</footer>
+          </article>
+          <article class="reveal">
+            <header>Small business <span>B</span></header>
+            <div class="ruled flex-1 px-4.5 py-5.5">
+              <h3>Close the books faster</h3>
+              <p>Turn supplier invoices and staff receipts into one tidy report and see where the money really goes.</p>
+            </div>
+            <footer>→ spend by category, monthly</footer>
+          </article>
+          <article class="reveal">
+            <header>Accountants <span>C</span></header>
+            <div class="ruled flex-1 px-4.5 py-5.5">
+              <h3>Stop re-typing client receipts</h3>
+              <p>Photos, forwarded emails, scanned PDFs. Batch them in one go and only look at the rows flagged for review.</p>
+            </div>
+            <footer>→ review exceptions only</footer>
+          </article>
+          <article class="reveal">
+            <header>Travel teams <span>D</span></header>
+            <div class="ruled flex-1 px-4.5 py-5.5">
+              <h3>Expense claims without chasing</h3>
+              <p>Taxis, hotels and meals in different currencies. Each receipt keeps its own currency, so totals stay honest.</p>
+            </div>
+            <footer>→ one report per trip</footer>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== §07 Before / after ===================== -->
+    <section class="border-t-2 border-ink py-20 md:py-28">
+      <div class="mx-auto max-w-[1200px] px-6">
+        <div class="reveal mb-16 grid gap-5 md:grid-cols-[220px_1fr] md:gap-8">
+          <div class="sec-num"><b>§07</b>Why switch</div>
+          <div><h2 class="h-section">The old way vs. <em>the new way</em></h2></div>
+        </div>
+        <div class="reveal grid overflow-hidden rounded-md border-2 border-ink md:grid-cols-2 [&>div]:p-8 [&_h3]:mb-5 [&_h3]:flex [&_h3]:items-center [&_h3]:gap-2.5 [&_h3]:text-[26px] [&_h3]:font-semibold [&_h3_small]:rounded-[3px] [&_h3_small]:px-2 [&_h3_small]:py-1 [&_h3_small]:font-mono [&_h3_small]:text-[11px] [&_h3_small]:font-semibold [&_h3_small]:tracking-[.08em] [&_h3_small]:uppercase [&_li]:grid [&_li]:gap-0.5 [&_li]:border-t [&_li]:border-dashed [&_li]:border-line [&_li]:py-3 sm:[&_li]:grid-cols-[160px_1fr] sm:[&_li]:gap-3.5 [&_li_span]:pt-0.5 [&_li_span]:font-mono [&_li_span]:text-xs [&_li_span]:tracking-wide [&_li_span]:text-muted [&_li_span]:uppercase">
+          <div class="bg-paper-2 max-md:border-b-2 md:border-r-2 border-ink">
+            <h3><small class="bg-ink text-paper">Before</small>Typing it by hand</h3>
+            <ul class="[&_b]:font-medium [&_b]:text-muted [&_b]:line-through [&_b]:decoration-stamp">
+              <li><span>20 receipts</span><b>An hour or more</b></li>
+              <li><span>Typos &amp; dates</span><b>Easy to miss</b></li>
+              <li><span>Unreadable</span><b>Guesswork</b></li>
+              <li><span>Charts &amp; totals</span><b>Build them yourself</b></li>
+              <li><span>Photos &amp; PDFs</span><b>Open each one</b></li>
+            </ul>
+          </div>
+          <div class="bg-card">
+            <h3><small class="bg-stamp text-white">After</small>Receipt Extractor</h3>
+            <ul class="[&_b]:text-ink">
+              <li><span>20 receipts</span><b>A couple of minutes</b></li>
+              <li><span>Typos &amp; dates</span><b>Validated automatically</b></li>
+              <li><span>Unreadable</span><b>Flagged with a clear note</b></li>
+              <li><span>Charts &amp; totals</span><b>Included in every report</b></li>
+              <li><span>Photos &amp; PDFs</span><b>One upload for all</b></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== §08 Developers ===================== -->
+    <section id="developers" class="bg-ledger-2 py-20 text-[#c9d8cd] md:py-28">
+      <div class="mx-auto grid max-w-[1200px] items-center gap-16 px-6 lg:grid-cols-2">
+        <div class="reveal">
+          <span class="eyebrow text-mustard">§08 · For developers</span>
+          <h2 class="h-section text-white [&_em]:text-mustard">A simple API behind <em>every</em> button</h2>
+          <p class="text-[19px] text-[#a9bfb0]">Plug receipt extraction into your own app, bot or workflow. Send files, get JSON, CSV or a finished Excel report back.</p>
+          <div class="mt-7 border-t border-[#3c5c4c] text-sm [&>div]:grid [&>div]:grid-cols-[56px_1fr] [&>div]:items-center [&>div]:gap-x-3.5 [&>div]:border-b [&>div]:border-[#3c5c4c] [&>div]:py-3 sm:[&>div]:grid-cols-[62px_150px_1fr] [&_b]:rounded-[3px] [&_b]:py-1 [&_b]:text-center [&_b]:font-mono [&_b]:text-[11.5px] [&_b]:font-semibold [&_b]:text-ink [&_code]:font-mono [&_code]:text-white [&>div>span]:text-[#a9bfb0] max-sm:[&>div>span]:col-start-2">
+            <div><b class="bg-mustard">POST</b><code>/extract</code><span>JSON rows + counts</span></div>
+            <div><b class="bg-mustard">POST</b><code>/extract/csv</code><span>CSV download</span></div>
+            <div><b class="bg-mustard">POST</b><code>/extract/xlsx</code><span>Excel report</span></div>
+            <div><b class="bg-[#9fd3b0]">GET</b><code>/health</code><span>status check</span></div>
+          </div>
+          <a class="btn mt-8" href="/docs" rel="nofollow">Open API reference</a>
+        </div>
+        <div class="reveal overflow-hidden rounded-md border-[1.5px] border-[#4f7a63] bg-[#0f1f18] shadow-[6px_6px_0_var(--color-mustard)]">
+          <div class="flex items-center gap-1.5 border-b border-[#2d4a3b] px-3.5 py-2.5 font-mono text-xs text-[#7f9d8b]">
+            <i class="size-2.5 rounded-full bg-[#2d4a3b]"></i><i class="size-2.5 rounded-full bg-[#2d4a3b]"></i><i class="size-2.5 rounded-full bg-[#2d4a3b]"></i><span class="ml-2">~/receipts $</span>
+          </div>
+<pre class="overflow-x-auto p-5 font-mono text-[13px] leading-[1.7] text-[#d7e5dc] [&_.c]:text-[#6f8f7c] [&_.k]:text-mustard [&_.n]:text-[#f6a582] [&_.s]:text-[#9fd3b0]"><span class="c"># Upload two receipts, get JSON back</span>
+<span class="k">curl</span> -X POST <span class="s">https://your-domain.com/extract</span> \
+  -F <span class="s">"files=@coffee.pdf"</span> \
+  -F <span class="s">"files=@taxi.jpg"</span>
+
+<span class="c"># Response</span>
+{
+  <span class="s">"total"</span>: <span class="n">2</span>, <span class="s">"ok"</span>: <span class="n">1</span>, <span class="s">"needs_review"</span>: <span class="n">1</span>,
+  <span class="s">"rows"</span>: [{
+    <span class="s">"file"</span>: <span class="s">"coffee.pdf"</span>,
+    <span class="s">"date"</span>: <span class="s">"2026-10-14"</span>,
+    <span class="s">"vendor"</span>: <span class="s">"Blue Bean Café"</span>,
+    <span class="s">"amount"</span>: <span class="n">9.61</span>, <span class="s">"tax"</span>: <span class="n">0.71</span>,
+    <span class="s">"currency"</span>: <span class="s">"USD"</span>,
+    <span class="s">"category"</span>: <span class="s">"Meals"</span>,
+    <span class="s">"status"</span>: <span class="s">"ok"</span>
+  }, ...]
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== §09 FAQ ===================== -->
+    <section id="faq" class="py-20 md:py-28">
+      <div class="mx-auto max-w-[1200px] px-6">
+        <div class="reveal mb-16 grid gap-5 md:grid-cols-[220px_1fr] md:gap-8">
+          <div class="sec-num"><b>§09</b>FAQ</div>
+          <div><h2 class="h-section">Questions, <em>answered</em></h2></div>
+        </div>
+        <div class="reveal grid gap-x-12 md:grid-cols-2 [&_details]:border-t-[1.5px] [&_details]:border-ink [&_details]:py-1 [&_summary]:grid [&_summary]:cursor-pointer [&_summary]:list-none [&_summary]:grid-cols-[1fr_24px] [&_summary]:gap-3 [&_summary]:py-4.5 [&_summary]:font-serif [&_summary]:text-[19px] [&_summary]:leading-snug [&_summary]:font-semibold [&_summary]:text-ink [&_summary::-webkit-details-marker]:hidden [&_summary]:after:text-right [&_summary]:after:font-mono [&_summary]:after:text-[22px] [&_summary]:after:leading-none [&_summary]:after:text-stamp [&_summary]:after:transition [&_summary]:after:content-['+'] [&_details[open]_summary]:after:rotate-45 [&_details_p]:pr-9 [&_details_p]:pb-4 [&_details_p]:text-muted [&_a]:text-ledger [&_a]:underline">
+          <div>
+            <details open>
+              <summary>What files can I upload?</summary>
+              <p>PDF receipts and invoices, plus images in PNG, JPG and WEBP (phone photos and screenshots). You can mix them in one batch of up to 20 files.</p>
+            </details>
+            <details>
+              <summary>What happens when the AI can't read something?</summary>
+              <p>It leaves the field empty and marks the row "needs review" with a note explaining what is missing. It never invents a value. Tax is the only field allowed to be empty, because many receipts don't show it.</p>
+            </details>
+            <details>
+              <summary>Do you store my receipts?</summary>
+              <p>No. Files are processed in memory to extract the fields and are then discarded. We don't keep copies of your receipts or your results.</p>
+            </details>
+          </div>
+          <div>
+            <details>
+              <summary>Does it work with scanned PDFs?</summary>
+              <p>Scanned PDFs are just pictures with no text inside. Upload them as an image (PNG or JPG) instead and the vision model will read them.</p>
+            </details>
+            <details>
+              <summary>Can I import the results into my accounting software?</summary>
+              <p>Yes. Download the CSV and import it into the spreadsheet or accounting tool you already use. The Excel report is best for sharing with people.</p>
+            </details>
+            <details>
+              <summary>Which categories does it use?</summary>
+              <p>Meals, Travel, Office Supplies, Software, Utilities, Groceries, Entertainment, Health and Other. Need your own categories? <a href="/contact/">Talk to us</a>.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Final CTA: stamped band ===================== -->
+    <section class="pb-24">
+      <div class="mx-auto max-w-[1200px] px-6">
+        <div class="reveal relative grid items-center gap-9 overflow-hidden rounded-md border-2 border-ink bg-stamp px-7 py-10 text-white shadow-hard-lg md:px-14 md:py-16 lg:grid-cols-[1.4fr_auto]">
+          <span class="pointer-events-none absolute -top-5 right-1/4 -rotate-10 font-mono text-[110px] leading-none font-bold text-white/10" aria-hidden="true">PAID ✓</span>
+          <div class="relative">
+            <h2 class="h-section text-white [&_em]:text-ink">Your next expense report is <em>two minutes</em> away</h2>
+            <p class="max-w-[560px] text-lg text-[#fde3d8]">Drop in this month's receipts and see the result for yourself. Free, no signup.</p>
+          </div>
+          <div class="relative flex flex-col gap-3.5 sm:flex-row lg:flex-col">
+            <a class="btn btn-ink btn-lg" href="/app/">Try it free</a>
+            <a class="btn btn-lg" href="/contact/">Talk to us</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+</body>
+</html>

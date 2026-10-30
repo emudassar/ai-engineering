@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy policy · Receipt Extractor</title>
+  <meta name="theme-color" content="#f4efe4">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <script src="/assets/site.js"></script>
+
+  <main>
+    <section class="border-b-2 border-ink py-16 md:py-20">
+      <div class="mx-auto grid max-w-[1200px] gap-5 px-6 md:grid-cols-[220px_1fr] md:gap-8">
+        <div class="sec-num"><b>§P</b>Legal</div>
+        <div>
+          <h1 class="mb-4 text-[clamp(42px,6vw,76px)] leading-[1.02] font-medium tracking-[-.035em]">Privacy <em class="text-ledger">policy</em></h1>
+          <p class="max-w-[640px] text-[19px] text-muted">Short version: we read your receipts to extract the fields, then forget them.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 md:py-20">
+      <div class="mx-auto grid max-w-[1200px] gap-8 px-6 md:grid-cols-[220px_1fr]">
+        <p class="h-fit border-y border-dashed border-line py-2.5 font-mono text-[13px] text-muted">Last updated:<br class="max-md:hidden"> October 2026</p>
+        <article class="legal max-w-[760px] [&>h2:first-child]:mt-0">
+          <h2>What we process</h2>
+          <p>When you upload a receipt, the file is sent to our server so the date, vendor, amount, tax, currency and
+            category can be extracted. The text of PDF receipts, or the image itself for photos, is sent to our AI
+            provider (Groq) to do the reading.</p>
+
+          <h2>What we store</h2>
+          <p>Nothing. Files are processed in memory and discarded when the request ends. The extracted rows live only in
+            your browser until you download them or close the page. We do not keep copies of your receipts or results.</p>
+
+          <h2>Third parties</h2>
+          <ul>
+            <li><b>Groq</b> processes receipt content to extract the fields. See Groq's own privacy policy for how they handle API data.</li>
+            <li><b>Hosting provider</b> keeps standard technical logs (such as IP address and request time) for security and reliability.</li>
+            <li><b>Google Fonts</b> serves the fonts used on this website.</li>
+          </ul>
+
+          <h2>Cookies</h2>
+          <p>We don't use tracking or advertising cookies.</p>
+
+          <h2>Contact form</h2>
+          <p>The contact form opens your own email app. We only receive what you choose to send, and use it only to reply to you.</p>
+
+          <h2>Your choices</h2>
+          <p>Don't upload receipts that contain information you aren't comfortable sharing with the providers above.
+            For any privacy question, email <a data-contact-email></a>.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+</body>
+</html>

@@ -6,12 +6,15 @@ Change a value here (or in the .env file) and the whole app follows.
 """
 
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
-# load_dotenv() searches the current folder and then the parent folders,
-# so it finds the .env file in the course root as well.
-load_dotenv()
+# Only read the .env in this project folder (not a parent folder), so the app
+# behaves the same locally and on Vercel. On Vercel there is no .env file:
+# the keys come from Project Settings -> Environment Variables.
+PROJECT_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(PROJECT_DIR / ".env")
 
 # ---------- Groq (the LLM provider) ----------
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -30,7 +33,9 @@ MAX_OUTPUT_TOKENS = 1500
 MAX_ATTEMPTS = 2
 
 # ---------- Upload limits ----------
-MAX_FILE_SIZE_MB = 10
+# Vercel rejects request bodies over 4.5 MB, and the web page sends one file
+# per request, so 4 MB per file is the safe default there.
+MAX_FILE_SIZE_MB = int(os.getenv("MAX_FILE_SIZE_MB", "4"))
 MAX_FILES_PER_REQUEST = 20
 MAX_TEXT_CHARS = 12000  # a receipt is short; this stops huge PDFs from costing tokens
 

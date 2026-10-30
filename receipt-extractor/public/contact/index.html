@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact · Receipt Extractor</title>
+  <meta name="description" content="Questions, demos, custom setups or API help: get in touch with the Receipt Extractor team.">
+  <meta name="theme-color" content="#f4efe4">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <script src="/assets/site.js"></script>
+
+  <main>
+    <section class="border-b-2 border-ink py-16 md:py-20">
+      <div class="mx-auto grid max-w-[1200px] gap-5 px-6 md:grid-cols-[220px_1fr] md:gap-8">
+        <div class="sec-num"><b>✉</b>Contact</div>
+        <div>
+          <h1 class="mb-4 text-[clamp(42px,6vw,76px)] leading-[1.02] font-medium tracking-[-.035em]">Let's talk <em class="text-ledger">receipts</em></h1>
+          <p class="max-w-[640px] text-[19px] text-muted">A demo for your team, a custom setup, API questions, or just a hello. We usually reply within one business day.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 md:py-20">
+      <div class="mx-auto grid max-w-[1200px] items-start gap-12 px-6 lg:grid-cols-[1.4fr_1fr]">
+        <form id="contact-form" class="rounded-md border-2 border-ink bg-card p-7 shadow-hard md:p-9" novalidate>
+          <h2 class="mb-6 text-[32px] font-medium">Send us a message</h2>
+          <div class="grid gap-x-4 sm:grid-cols-2">
+            <div class="mb-4.5">
+              <label class="mb-2 block font-mono text-xs font-medium tracking-wider text-ink uppercase" for="name">Your name</label>
+              <input class="w-full rounded-none border-0 border-b-[1.5px] border-ink bg-transparent py-3 text-base text-ink outline-none placeholder:text-muted/70 focus:border-stamp focus:bg-mustard-soft" id="name" name="name" required maxlength="100" autocomplete="name" placeholder="Jane Doe">
+            </div>
+            <div class="mb-4.5">
+              <label class="mb-2 block font-mono text-xs font-medium tracking-wider text-ink uppercase" for="email">Email</label>
+              <input class="w-full rounded-none border-0 border-b-[1.5px] border-ink bg-transparent py-3 text-base text-ink outline-none placeholder:text-muted/70 focus:border-stamp focus:bg-mustard-soft" id="email" name="email" type="email" required maxlength="150" autocomplete="email" placeholder="jane@company.com">
+            </div>
+            <div class="mb-4.5">
+              <label class="mb-2 block font-mono text-xs font-medium tracking-wider text-ink uppercase" for="company">Company <span class="tracking-normal text-muted normal-case">(optional)</span></label>
+              <input class="w-full rounded-none border-0 border-b-[1.5px] border-ink bg-transparent py-3 text-base text-ink outline-none placeholder:text-muted/70 focus:border-stamp focus:bg-mustard-soft" id="company" name="company" maxlength="100" autocomplete="organization" placeholder="Acme Ltd">
+            </div>
+            <div class="mb-4.5">
+              <label class="mb-2 block font-mono text-xs font-medium tracking-wider text-ink uppercase" for="topic">Topic</label>
+              <select class="w-full rounded-none border-0 border-b-[1.5px] border-ink bg-transparent py-3 text-base text-ink outline-none placeholder:text-muted/70 focus:border-stamp focus:bg-mustard-soft" id="topic" name="topic">
+                <option value="question">General question</option>
+                <option value="demo">Book a demo</option>
+                <option value="custom">Custom setup</option>
+                <option value="api">API &amp; integrations</option>
+                <option value="bug">Report a problem</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-4.5">
+            <label class="mb-2 block font-mono text-xs font-medium tracking-wider text-ink uppercase" for="message">Message</label>
+            <textarea class="w-full rounded-none border-0 border-b-[1.5px] border-ink bg-transparent py-3 text-base text-ink outline-none placeholder:text-muted/70 focus:border-stamp focus:bg-mustard-soft min-h-32 resize-y" id="message" name="message" required maxlength="3000" placeholder="Tell us how many receipts you handle and what you'd like to do with them."></textarea>
+          </div>
+          <button class="btn btn-stamp btn-lg" type="submit">
+            Send message
+            <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>
+          </button>
+          <p class="mt-3.5 font-mono text-[13px] text-muted">This opens your email app with the message ready to send.</p>
+          <div id="form-success" class="mt-4 flex gap-2.5 rounded-md border-[1.5px] border-ok bg-ok-soft px-4 py-3.5" hidden>
+            ✅ <span>Your email app should have opened with your message. If it didn't, write to us at <a class="link" data-contact-email></a>.</span>
+          </div>
+        </form>
+
+        <div class="border-t-2 border-ink [&>div]:grid [&>div]:grid-cols-[40px_1fr] [&>div]:gap-3.5 [&>div]:border-b [&>div]:border-dashed [&>div]:border-line [&>div]:py-5.5 [&_h3]:mb-1 [&_h3]:text-xl [&_h3]:font-semibold [&_p]:text-muted [&>div>span]:pt-1 [&>div>span]:font-mono [&>div>span]:text-[13px] [&>div>span]:text-stamp">
+          <div><span>01</span><div><h3>Email</h3><p><a class="link" data-contact-email></a></p></div></div>
+          <div><span>02</span><div><h3>Response time</h3><p>Within one business day, usually sooner.</p></div></div>
+          <div><span>03</span><div><h3>Want to see it first?</h3><p>The app is free and needs no signup. <a class="link" href="/app/">Try it now →</a></p></div></div>
+          <div><span>04</span><div><h3>Developers</h3><p>Explore the endpoints in the <a class="link" href="/docs" rel="nofollow">API reference</a>.</p></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+</body>
+</html>

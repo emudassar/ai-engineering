@@ -1,0 +1,182 @@
+/* =====================================================================
+   input.css - Tailwind source for the whole site (home, /app/, contact, legal).
+   Build:  npm run build:css   ->  public/assets/site.css (committed, served as-is)
+   Watch:  npm run watch:css
+
+   Theme: "paper ledger" - warm paper, ink, ledger green, stamp red, mustard.
+   Pages use utility classes. The small @layer components block below covers
+   things repeated everywhere (buttons, receipt edges) and the elements that
+   app.js creates at runtime (queue items, badges, table cells).
+   ===================================================================== */
+
+@import "tailwindcss";
+@source "../public";
+
+@theme {
+  --color-paper: #f4efe4;
+  --color-paper-2: #ebe3d2;
+  --color-card: #fffdf8;
+  --color-ink: #1b1a17;
+  --color-body: #39352d;
+  --color-muted: #7a7263;
+  --color-line: #d8cdb7;
+  --color-line-soft: #e7dfcd;
+  --color-ledger: #1f4d3a;
+  --color-ledger-2: #163a2b;
+  --color-ledger-soft: #dcebdf;
+  --color-stamp: #d9481c;
+  --color-stamp-soft: #fbe3d8;
+  --color-mustard: #f0c24b;
+  --color-mustard-soft: #fbefc8;
+  --color-ok: #2c7a4b;
+  --color-ok-soft: #ddf0e2;
+  --color-warn: #9a6400;
+  --color-bad: #b3261e;
+  --color-bad-soft: #f8dcd8;
+
+  --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+
+  --shadow-hard: 4px 4px 0 var(--color-ink);
+  --shadow-hard-sm: 3px 3px 0 var(--color-ink);
+  --shadow-hard-lg: 8px 8px 0 var(--color-ink);
+  --shadow-paper: 0 1px 0 rgb(27 26 23 / .04), 0 18px 40px -18px rgb(27 26 23 / .28);
+
+  --animate-scan: scan 3.4s ease-in-out infinite;
+  --animate-shimmer: shimmer 1.2s linear infinite;
+  --animate-toast: toast-in .2s ease;
+
+  @keyframes scan { 0%, 100% { top: 30px; } 50% { top: calc(100% - 36px); } }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+  @keyframes toast-in { from { transform: translateY(10px); opacity: 0; } }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+  body { @apply bg-paper font-sans text-body antialiased; }
+  h1, h2, h3, h4 { @apply font-serif text-ink tracking-tight; }
+  ::selection { @apply bg-mustard text-ink; }
+  [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+}
+
+@layer components {
+  /* ---------- Buttons: square, ink border, hard shadow ---------- */
+  .btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2.5 whitespace-nowrap rounded-md border-2 border-ink
+           bg-card px-5 py-3 text-[15px] leading-none font-semibold text-ink no-underline shadow-hard-sm
+           transition hover:-translate-x-px hover:-translate-y-px hover:shadow-[5px_5px_0_var(--color-ink)]
+           active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0_var(--color-ink)]
+           disabled:cursor-not-allowed disabled:opacity-45 disabled:translate-none disabled:shadow-hard-sm;
+  }
+  .btn svg { @apply size-[18px] fill-none stroke-current stroke-[2.2]; stroke-linecap: round; stroke-linejoin: round; }
+  .btn-ink { @apply bg-ink text-paper hover:bg-black; }
+  .btn-ledger { @apply bg-ledger text-white; }
+  .btn-stamp { @apply bg-stamp text-white; }
+  .btn-lg { @apply px-6.5 py-4 text-base; }
+
+  /* ---------- Section headings: "§01 The problem" + big serif h2 ---------- */
+  .h-section { @apply mb-4 text-[clamp(32px,4.4vw,56px)] leading-[1.05] font-medium tracking-[-.03em]; }
+  .h-section em { @apply text-ledger; }
+  .sec-num { @apply border-t-2 border-ink pt-3.5 font-mono text-[13px] tracking-wider text-muted uppercase max-md:flex max-md:items-baseline max-md:gap-3; }
+  .sec-num b { @apply mb-2 block font-serif text-[44px] leading-none font-medium tracking-tight text-stamp max-md:mb-0 max-md:text-3xl; }
+  .eyebrow { @apply mb-4 inline-block font-mono text-[13px] tracking-[.08em] text-stamp uppercase; }
+
+  /* ---------- Torn receipt edges. Set --zz to the paper colour ---------- */
+  .zz-top::before, .zz-bottom::after {
+    content: ""; @apply absolute inset-x-0 h-2.5 bg-repeat-x;
+    background-size: 14px 10px;
+  }
+  .zz-top::before {
+    top: -10px;
+    background-image: linear-gradient(45deg, var(--zz) 50%, transparent 50%), linear-gradient(-45deg, var(--zz) 50%, transparent 50%);
+  }
+  .zz-bottom::after {
+    bottom: -10px;
+    background-image: linear-gradient(135deg, var(--zz) 50%, transparent 50%), linear-gradient(-135deg, var(--zz) 50%, transparent 50%);
+  }
+
+  /* Highlighter-pen underline */
+  .hl { background: linear-gradient(transparent 58%, var(--color-mustard) 58% 92%, transparent 92%); @apply px-[.08em]; }
+
+  /* Ruled index-card paper */
+  .ruled { background-image: repeating-linear-gradient(transparent 0 31px, var(--color-line-soft) 31px 32px); background-position: 0 14px; }
+
+  /* Fade in on scroll (site.js adds .in) */
+  .reveal { @apply translate-y-4 opacity-0 transition duration-700 ease-out motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none; }
+  .reveal.in { @apply translate-y-0 opacity-100; }
+
+  /* ---------- Category chips (home page + app table) ---------- */
+  .chip { @apply inline-block rounded-[3px] border border-current px-2 py-1 font-mono text-[11.5px] leading-none font-semibold whitespace-nowrap; }
+  .cat-meals { @apply bg-[#fbe8dc] text-[#b3541e]; }
+  .cat-travel { @apply bg-[#e1edf7] text-[#2a6496]; }
+  .cat-office-supplies { @apply bg-[#e7f1dc] text-[#4f7a28]; }
+  .cat-software { @apply bg-[#ece4f6] text-[#6a4a9c]; }
+  .cat-utilities { @apply bg-[#f8efcc] text-[#8a6d00]; }
+  .cat-groceries { @apply bg-ok-soft text-ok; }
+  .cat-entertainment { @apply bg-[#f8dfe8] text-[#b02a5b]; }
+  .cat-health { @apply bg-[#d9f0ef] text-[#0f7a7a]; }
+  .cat-other { @apply bg-[#ebe7de] text-[#5d5a52]; }
+
+  /* ---------- Legal pages ---------- */
+  .legal h2 { @apply mt-11 mb-3 text-3xl font-medium; }
+  .legal p { @apply mb-4 leading-relaxed; }
+  .legal ul { @apply mb-4 list-disc space-y-2 pl-5; }
+  .legal a, .link { @apply text-ledger underline underline-offset-3 hover:text-stamp; }
+
+  /* ---------- App: things app.js creates ---------- */
+  .dropzone.dragging { @apply border-stamp bg-mustard-soft; }
+  .dropzone.disabled { @apply pointer-events-none opacity-55; }
+
+  #queue li { @apply flex items-center gap-3 border-b border-dashed border-line py-2.5 font-mono text-sm last:border-b-0; }
+  .file-type { @apply rounded-[3px] px-1.5 py-1 text-[11px] font-bold tracking-wider; }
+  .file-type.pdf { @apply bg-stamp-soft text-stamp; }
+  .file-type.img { @apply bg-ledger-soft text-ledger; }
+  .file-name { @apply flex-1 truncate text-ink; }
+  .file-size { @apply text-xs text-muted; }
+  .remove { @apply cursor-pointer rounded px-1.5 text-xl leading-none text-muted hover:bg-bad-soft hover:text-bad; }
+
+  .status-pill { @apply inline-flex items-center gap-2 rounded-[3px] border-[1.5px] border-dashed border-current px-3 py-1.5 font-mono text-xs text-muted; }
+  .status-pill .dot { @apply size-2 rounded-full bg-current; }
+  .status-ok { @apply text-ok; }
+  .status-bad { @apply text-bad; }
+
+  .tab { @apply cursor-pointer border-b-[3px] border-transparent px-3.5 py-3 font-mono text-[13px] font-medium whitespace-nowrap text-muted uppercase tracking-wide hover:text-ink; }
+  .tab.active { @apply border-stamp text-ink; }
+  .tab .count { @apply ml-1 inline-block min-w-6 rounded-[3px] bg-paper-2 px-1.5 text-center text-xs; }
+  .tab.active .count { @apply bg-ink text-paper; }
+
+  #rows td { @apply border-b border-dashed border-line px-3.5 py-3 align-middle; }
+  #rows tr:last-child td { @apply border-b-0; }
+  #rows tr:hover { @apply bg-paper/60; }
+  #rows tr.row-needs_review { @apply bg-mustard-soft; }
+  #rows tr.row-error { @apply bg-bad-soft/60; }
+  #rows .num { @apply text-right font-mono whitespace-nowrap; }
+  .cell-file { @apply max-w-44 truncate font-mono text-xs text-muted; }
+  .cell-vendor { @apply font-semibold text-ink; }
+  .cell-amount { @apply font-semibold text-ink; }
+  .cell-notes { @apply max-w-64 text-[13px] text-muted; }
+  .currency { @apply mr-1 text-[11px] font-semibold text-muted; }
+  .missing { @apply rounded-[3px] bg-mustard px-2 py-0.5 font-mono text-[11px] font-semibold text-ink; }
+  .dash { @apply text-line; }
+
+  .badge { @apply inline-flex items-center gap-1.5 rounded-[3px] border-[1.5px] border-current px-2 py-0.5 font-mono text-xs font-semibold whitespace-nowrap uppercase; }
+  .badge-ok { @apply bg-ok-soft text-ok; }
+  .badge-needs_review { @apply bg-mustard-soft text-warn; }
+  .badge-error { @apply bg-bad-soft text-bad; }
+  .badge-pending { @apply text-muted; }
+  .badge-processing { @apply bg-ledger-soft text-ledger; }
+  .spinner { @apply size-3 animate-spin rounded-full border-2 border-current border-r-transparent; }
+  .skeleton {
+    @apply inline-block h-2.5 w-[70px] animate-shimmer rounded-sm;
+    background: linear-gradient(90deg, var(--color-line-soft) 25%, var(--color-line) 50%, var(--color-line-soft) 75%);
+    background-size: 200% 100%;
+  }
+
+  .toast { @apply max-w-sm animate-toast rounded-md border-2 border-ink bg-card px-4 py-3 text-sm text-ink shadow-hard-sm; }
+  .toast.error { @apply bg-bad text-white; }
+  .toast.success { @apply bg-ledger text-white; }
+}

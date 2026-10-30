@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>App · Receipt Extractor</title>
+  <meta name="description" content="Upload receipt PDFs or photos and download a clean expense report.">
+  <meta name="theme-color" content="#f4efe4">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <script src="/assets/site.js"></script>
+
+  <main class="pb-20">
+    <!-- ===================== Page heading + steps ===================== -->
+    <section class="border-b-2 border-ink">
+      <div class="mx-auto flex max-w-[1200px] flex-wrap items-end justify-between gap-6 px-6 pt-12 pb-8">
+        <div>
+          <span class="eyebrow">Workbench</span>
+          <h1 class="mb-3 text-[clamp(36px,5vw,60px)] leading-none font-medium tracking-[-.03em]">Extract your <em class="text-ledger">receipts</em></h1>
+          <p class="max-w-[600px] text-muted">Drop in PDFs or photos. We read the date, vendor, amount, tax, currency and category,
+            then you download a ready-to-share Excel report.</p>
+        </div>
+        <div id="server-status" class="status-pill status-checking">
+          <span class="dot"></span><span class="label">Checking server…</span>
+        </div>
+      </div>
+      <ol class="mx-auto grid max-w-[1200px] grid-cols-3 border-t border-dashed border-line px-6 font-mono text-xs tracking-wider text-muted uppercase [&>li]:flex [&>li]:items-center [&>li]:gap-2.5 [&>li]:py-3.5 [&_b]:grid [&_b]:size-6 [&_b]:place-items-center [&_b]:rounded-full [&_b]:border-[1.5px] [&_b]:border-ink [&_b]:text-ink">
+        <li><b class="bg-mustard">1</b>Upload</li>
+        <li><b>2</b>Extract</li>
+        <li><b>3</b>Download</li>
+      </ol>
+    </section>
+
+    <div class="mx-auto max-w-[1200px] px-6">
+      <!-- ===================== Upload ===================== -->
+      <section class="mt-10 grid items-start gap-8 lg:grid-cols-[1.35fr_1fr]">
+        <label id="dropzone" for="file-input" class="dropzone zz-bottom relative block cursor-pointer bg-card px-6 pt-14 pb-12 text-center shadow-paper transition-colors [--zz:var(--color-card)] outline-2 outline-offset-[-14px] outline-dashed outline-line hover:bg-mustard-soft hover:[--zz:var(--color-mustard-soft)]">
+          <input id="file-input" type="file" multiple hidden>
+          <div class="mx-auto mb-5 grid size-16 place-items-center rounded-md border-2 border-ink bg-mustard shadow-hard-sm">
+            <svg class="size-7 fill-none stroke-ink stroke-2" viewBox="0 0 24 24" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
+          </div>
+          <p class="font-serif text-2xl font-semibold text-ink">Drop receipts here, or <span class="text-stamp underline underline-offset-4">browse</span></p>
+          <p id="dropzone-hint" class="mt-2 font-mono text-[13px] text-muted">PDF, PNG, JPG, WEBP</p>
+        </label>
+
+        <!-- Queue: files waiting to be processed -->
+        <div class="rounded-md border-2 border-ink bg-card shadow-hard">
+          <div class="flex items-center justify-between border-b-2 border-ink px-5 py-3 font-mono text-xs tracking-wider uppercase">
+            <span>Queue</span><span class="text-muted">PDF · IMG</span>
+          </div>
+          <div class="px-5">
+            <ul id="queue" class="max-h-72 overflow-y-auto"></ul>
+            <p id="queue-summary" class="py-4 font-mono text-[13px] text-muted">No files selected yet</p>
+          </div>
+          <div class="flex flex-wrap gap-2.5 border-t border-dashed border-line px-5 py-4">
+            <button id="clear-btn" class="btn" disabled>Clear</button>
+            <button id="extract-btn" class="btn btn-ink flex-1" disabled>Extract receipts</button>
+          </div>
+          <!-- Progress (shown while extracting) -->
+          <div id="progress" class="border-t border-dashed border-line px-5 py-4" hidden>
+            <div class="mb-2 flex justify-between gap-3 font-mono text-xs text-muted">
+              <span id="progress-label" class="truncate">Starting…</span>
+              <span id="progress-count">0 / 0</span>
+            </div>
+            <div class="h-2.5 overflow-hidden rounded-[2px] border-[1.5px] border-ink bg-paper">
+              <div id="progress-bar" class="h-full w-0 bg-stamp transition-[width] duration-300"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Results ===================== -->
+      <section id="results" class="mt-14" hidden>
+        <div class="mb-5 flex flex-wrap items-end justify-between gap-4 border-t-2 border-ink pt-6">
+          <div>
+            <h2 class="mb-1 text-4xl font-medium">The ledger</h2>
+            <p class="text-sm text-muted"><span class="hl">Yellow rows</span> need a quick check. Nothing was guessed.</p>
+          </div>
+          <div class="flex flex-wrap gap-2.5">
+            <button id="csv-btn" class="btn" disabled>Download CSV</button>
+            <button id="xlsx-btn" class="btn btn-ledger" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+              Download Excel report
+            </button>
+          </div>
+        </div>
+
+        <!-- Totals strip -->
+        <div class="mb-5 grid grid-cols-2 overflow-hidden rounded-md border-2 border-ink bg-card sm:grid-cols-4 lg:grid-cols-5 [&>div]:flex [&>div]:flex-col [&>div]:border-ink/15 [&>div]:px-4 [&>div]:py-3.5 [&>div:not(:last-child)]:border-r [&_.kpi-label]:font-mono [&_.kpi-label]:text-[11px] [&_.kpi-label]:tracking-wider [&_.kpi-label]:text-muted [&_.kpi-label]:uppercase [&_.kpi-value]:font-mono [&_.kpi-value]:text-3xl [&_.kpi-value]:font-medium">
+          <div><span class="kpi-label">Receipts</span><span id="kpi-total" class="kpi-value text-ink">0</span></div>
+          <div><span class="kpi-label">Ready</span><span id="kpi-ok" class="kpi-value text-ok">0</span></div>
+          <div><span class="kpi-label">Needs review</span><span id="kpi-review" class="kpi-value text-warn">0</span></div>
+          <div><span class="kpi-label">Errors</span><span id="kpi-error" class="kpi-value text-bad">0</span></div>
+          <div class="col-span-2 bg-ink sm:col-span-4 lg:col-span-1 [&_.kpi-label]:text-mustard!"><span id="kpi-spent-label" class="kpi-label">Total spent</span><span id="kpi-spent" class="kpi-value text-white">–</span></div>
+        </div>
+
+        <!-- Filter tabs + table -->
+        <div class="overflow-hidden rounded-md border-2 border-ink bg-card shadow-hard">
+          <div id="tabs" class="flex gap-1 overflow-x-auto border-b-2 border-ink px-3">
+            <button class="tab active" data-filter="all">All <span class="count" data-count="all">0</span></button>
+            <button class="tab" data-filter="ok">Ready <span class="count" data-count="ok">0</span></button>
+            <button class="tab" data-filter="needs_review">Needs review <span class="count" data-count="needs_review">0</span></button>
+            <button class="tab" data-filter="error">Errors <span class="count" data-count="error">0</span></button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse text-sm">
+              <thead class="bg-paper-2 [&_th]:border-b [&_th]:border-line [&_th]:px-3.5 [&_th]:py-3 [&_th]:text-left [&_th]:font-mono [&_th]:text-[11px] [&_th]:font-medium [&_th]:tracking-wider [&_th]:whitespace-nowrap [&_th]:text-muted [&_th]:uppercase">
+                <tr>
+                  <th>File</th><th>Date</th><th>Vendor</th><th>Category</th>
+                  <th class="text-right!">Amount</th><th class="text-right!">Tax</th><th>Status</th><th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+            <p id="empty-filter" class="p-7 text-center font-mono text-sm text-muted" hidden>No receipts in this view.</p>
+          </div>
+        </div>
+
+        <div class="mt-6 text-center">
+          <button id="restart-btn" class="btn">↺ Start over</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- Small pop-up messages -->
+  <div id="toasts" class="fixed right-5 bottom-5 z-50 grid gap-2.5"></div>
+
+  <script src="/assets/app.js"></script>
+</body>
+</html>

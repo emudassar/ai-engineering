@@ -3,8 +3,11 @@ main.py
 -------
 The FastAPI web app. Run it with:   uv run uvicorn app.main:app --reload
 
+The website (home, /app/, /contact/, ...) lives in the public/ folder.
+On Vercel the CDN serves public/ directly; locally the mount at the bottom
+of this file serves the same files, so the URLs are identical in both places.
+
 Routes:
-  GET  /              -> the web app (HTML page)
   GET  /health        -> quick "is the server alive" check
   GET  /settings      -> upload limits, so the web page uses the same rules as the server
 
@@ -16,10 +19,8 @@ Routes:
   POST /export/xlsx   -> send rows you ALREADY extracted, get the Excel   (no LLM call)
 """
 
-from pathlib import Path
-
 from fastapi import FastAPI, File, HTTPException, UploadFile
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -29,6 +30,7 @@ from app.config import (
     GROQ_API_KEY,
     MAX_FILE_SIZE_MB,
     MAX_FILES_PER_REQUEST,
+    PROJECT_DIR,
 )
 from app.csv_export import rows_to_csv
 from app.pipeline import process_file
@@ -36,9 +38,6 @@ from app.schemas import ReceiptRow
 from app.xlsx_export import rows_to_xlsx
 
 app = FastAPI(title="Receipt Extractor")
-
-STATIC_DIR = Path(__file__).parent / "static"
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 XLSX_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 MAX_EXPORT_ROWS = 1000
@@ -53,7 +52,7 @@ class ExportRequest(BaseModel):
 # ---------- Helpers ----------
 def _process_uploads(files: list[UploadFile]) -> list[ReceiptRow]:
     if not GROQ_API_KEY:
-        raise HTTPException(status_code=500, detail="GROQ_API_KEY is missing. Add it to your .env file.")
+        raise HTTPException(status_code=500, detail="GROQ_API_KEY is missing. Add it to .env (local) or to the Vercel environment variables.")
     if not files:
         raise HTTPException(status_code=400, detail="Please upload at least one receipt.")
     if len(files) > MAX_FILES_PER_REQUEST:
@@ -83,12 +82,7 @@ def _xlsx_response(rows: list[ReceiptRow]) -> Response:
     )
 
 
-# ---------- Pages & info ----------
-@app.get("/")
-def home():
-    return FileResponse(STATIC_DIR / "index.html")
-
-
+# ---------- Info ----------
 @app.get("/health")
 def health():
     return {"status": "ok", "api_key_set": bool(GROQ_API_KEY)}
@@ -138,3 +132,9 @@ def export_xlsx(request: ExportRequest):
     if not request.rows:
         raise HTTPException(status_code=400, detail="There are no rows to export.")
     return _xlsx_response(request.rows)
+
+
+# ---------- Website (must stay LAST: it catches every path not matched above) ----------
+# check_dir=False: on Vercel public/ is served by the CDN and may not be
+# bundled with the Python function, so a missing folder must not crash startup.
+app.mount("/", StaticFiles(directory=PROJECT_DIR / "public", html=True, check_dir=False), name="site")

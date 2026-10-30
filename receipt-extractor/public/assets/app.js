@@ -12,7 +12,7 @@
 
 // ---------- Settings (updated from the server's /settings on page load) ----------
 let settings = {
-  max_file_size_mb: 10,
+  max_file_size_mb: 4,
   max_files: 20,
   allowed_extensions: [".pdf", ".png", ".jpg", ".jpeg", ".webp"],
 };
@@ -98,7 +98,7 @@ async function loadServerInfo() {
     } else {
       pill.className = "status-pill status-bad";
       label.textContent = "API key missing";
-      showToast("GROQ_API_KEY is missing on the server. Add it to your .env file.", "error");
+      showToast("GROQ_API_KEY is missing on the server. Add it to .env (local) or Vercel environment variables.", "error");
     }
   } catch {
     pill.className = "status-pill status-bad";

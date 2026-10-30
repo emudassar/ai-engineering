@@ -181,8 +181,9 @@ def test_xlsx_has_real_dates_widths_and_header(client):
 def test_settings_and_static_files(client):
     settings = client.get("/settings").json()
     assert settings["max_files"] == 20 and ".pdf" in settings["allowed_extensions"]
-    assert client.get("/static/app.js").status_code == 200
-    assert client.get("/static/styles.css").status_code == 200
+    for path in ["/app/", "/contact/", "/privacy/", "/terms/", "/assets/app.js", "/assets/site.css"]:
+        assert client.get(path).status_code == 200, path
+    assert client.get("/no-such-page").status_code == 404
 
 
 def test_export_csv_and_validation(client):
