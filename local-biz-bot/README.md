@@ -82,8 +82,12 @@ uv run python -m app.leads localhost-8000
 
 A Render web service runs the whole app (website + API) as one normal Python server.
 
-1. In Render choose **New → Blueprint** and pick this GitHub repo. `render.yaml` at the repo root describes the
-   service (free plan, root directory `local-biz-bot`).
+Live demo: https://local-biz-bot-qxl6.onrender.com (deployed from the standalone
+[emudassar/local-biz-bot](https://github.com/emudassar/local-biz-bot) repo).
+
+1. In Render create a free **Web Service** from this repo (or **New → Blueprint**, which reads `render.yaml`).
+   Build command `pip install -r requirements.txt`, start command
+   `uvicorn app.main:app --host 0.0.0.0 --port $PORT`, environment variable `PYTHON_VERSION=3.12.8`.
 2. Render asks for the secrets: `GROQ_API_KEY`, `ADMIN_KEY`, `QDRANT_URL`, `QDRANT_API_KEY`. Use Qdrant Cloud:
    the free service's disk is wiped on every deploy and restart.
 3. On startup the app adds its own `*.onrender.com` address as a site (`onboard_self()` in `app/onboard.py`), so the

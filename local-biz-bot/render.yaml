@@ -1,11 +1,10 @@
-# Render Blueprint: deploys local-biz-bot as a free web service.
+# Render Blueprint: deploys this repo as a free web service.
 # Secrets marked sync: false are typed into the Render dashboard, never committed.
 services:
   - type: web
     name: local-biz-bot
     runtime: python
     plan: free
-    rootDir: local-biz-bot
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /
